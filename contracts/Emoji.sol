@@ -44,7 +44,7 @@ contract Emoji is ERC721URIStorage {
   function getNFTByCoordinates(int256 x, int256 y) public view returns (NFTData memory) {
     uint256 tokenId = _coordinatesToTokenId[x][y];
     if (tokenId == 0) {
-      return NFTData(0, "", address(0), 0, 0);
+      return NFTData(0, "", address(0), x, y);
     }
 
     return _nftData[tokenId];
