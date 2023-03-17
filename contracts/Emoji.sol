@@ -17,22 +17,30 @@ contract Emoji is ERC721URIStorage {
     int256 y;
   }
 
+  struct MintNFTData {
+    string stringData;
+    address targetAddress;
+    int256 x;
+    int256 y;
+    string tokenURI;
+  }
+
   mapping (uint256 => NFTData) private _nftData;
   mapping (int256 => mapping(int256 => uint256)) private _coordinatesToTokenId;
 
   constructor() ERC721("Emoji", "EMOJI") {}
 
-  function mint(NFTData memory nftData, string memory tokenURI) public returns (NFTData memory) {
-    require(_coordinatesToTokenId[nftData.x][nftData.y] == 0, "This coordinate is already taken");
+  function mint(MintNFTData memory mintNftData) public returns (NFTData memory) {
+    require(_coordinatesToTokenId[mintNftData.x][mintNftData.y] == 0, "This coordinate is already taken");
 
     _tokenIds.increment();
     uint256 tokenId = _tokenIds.current();
     _mint(msg.sender, tokenId);
-    _setTokenURI(tokenId, tokenURI);
+    _setTokenURI(tokenId, mintNftData.tokenURI);
 
-    nftData.tokenId = tokenId;
+    NFTData memory nftData = NFTData(tokenId, mintNftData.stringData, mintNftData.targetAddress, mintNftData.x, mintNftData.y);
     _nftData[tokenId] = nftData;
-    _coordinatesToTokenId[nftData.x][nftData.y] = tokenId;
+    _coordinatesToTokenId[mintNftData.x][mintNftData.y] = tokenId;
 
     return nftData;
   }
