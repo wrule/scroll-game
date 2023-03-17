@@ -22,17 +22,19 @@ contract Emoji is ERC721URIStorage {
 
   constructor() ERC721("Emoji", "EMOJI") {}
 
-  function mint(address recipient, string memory tokenURI, string memory stringData, address targetAddress, int256 x, int256 y) public returns (NFTData memory nftData) {
-    require(_coordinatesToTokenId[x][y] == 0, "This coordinate is already taken");
+  function mint(NFTData memory nftData, string memory tokenURI) public returns (NFTData memory) {
+    require(_coordinatesToTokenId[nftData.x][nftData.y] == 0, "This coordinate is already taken");
 
     _tokenIds.increment();
     uint256 tokenId = _tokenIds.current();
-    _mint(recipient, tokenId);
+    _mint(msg.sender, tokenId);
     _setTokenURI(tokenId, tokenURI);
 
-    nftData = NFTData(tokenId, stringData, targetAddress, x, y);
+    nftData.tokenId = tokenId;
     _nftData[tokenId] = nftData;
-    _coordinatesToTokenId[x][y] = tokenId;
+    _coordinatesToTokenId[nftData.x][nftData.y] = tokenId;
+
+    return nftData;
   }
 
   function getNFTById(uint256 tokenId) public view returns (NFTData memory) {
