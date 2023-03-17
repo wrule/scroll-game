@@ -45,6 +45,14 @@ contract Emoji is ERC721URIStorage {
     return nftData;
   }
 
+  function batchMint(MintNFTData[] memory mintNftDataArr) public returns (NFTData[] memory) {
+    NFTData[] memory resultArr = new NFTData[](mintNftDataArr.length);
+    for (uint256 i = 0; i < mintNftDataArr.length; i++) {
+      resultArr[i] = mint(mintNftDataArr[i]);
+    }
+    return resultArr;
+  }
+
   function getNFTById(uint256 tokenId) public view returns (NFTData memory) {
     require(_exists(tokenId), "Token does not exist");
 
